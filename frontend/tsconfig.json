@@ -7,7 +7,7 @@
     "skipLibCheck": true,
     "noEmitOnError": false,
     "noImplicitAny": false,
-    "types": ["vite/client"],
+    "types": ["vite/client", "@types/node"],
 
 
     /* Bundler mode */
