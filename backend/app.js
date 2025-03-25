@@ -14,8 +14,7 @@ const app = express();
 // Middleware
 app.use({
     origin: [
-      'http://localhost:5173',  // Local frontend
-      'https://medixfrontend.onrender.com', // Add your deployed frontend URL
+'*', // Add your deployed frontend URL
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
