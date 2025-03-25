@@ -7,7 +7,7 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: NODE_VERSION
-        value: 18.19.0
+        value: 22.12.0
     headers:
       - path: /*
         name: Cache-Control

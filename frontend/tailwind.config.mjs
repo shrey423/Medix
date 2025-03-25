@@ -55,6 +55,9 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        green: '#487961',
+        headingColor: '#302C2C',
+        subHeadingColor: 'rgba(48, 44, 44, 0.65)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -74,6 +77,22 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
+      fontSize: {
+        'h1': ['72px', { lineHeight: '118%', letterSpacing: '-2.16px' }],
+        'h2': ['40px', { lineHeight: '118%', letterSpacing: '-1.2px' }],
+        'h3': ['20px', { lineHeight: '30px', letterSpacing: '-0.2px' }],
+        'p': ['20px', { lineHeight: '30px', letterSpacing: '-0.2px' }],
+      },
+      screens: {
+        'custom': '1440px',
+        'custom-xl': '2440px',
+      },
+      maxWidth: {
+        'screen-2xl': '1740px',
       },
     },
   },
