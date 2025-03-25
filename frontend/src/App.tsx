@@ -17,7 +17,7 @@ import UploadReports from "./components/consultation/patient/UploadReports.tsx";
 import deferRoleChecking from "./components/consultation/deferRoleChecking";
 import deferRoleCheckingAndDoctors from "./components/consultation/deferRoleCheckingAndDoctors";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Analytics } from "@vercel/analytics/react";
+
 import ServicesPage from "./pages/ServicesPage.tsx";
 
 // Define loader functions for routes that need them
@@ -64,7 +64,6 @@ function App() {
     return (
         <GoogleOAuthProvider clientId="1011414615826-gnek02s2mud1upst69nre87fkfpu7151.apps.googleusercontent.com">
             <RouterProvider router={router} />
-            <Analytics />
         </GoogleOAuthProvider>
     );
 }
