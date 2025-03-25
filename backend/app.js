@@ -12,7 +12,15 @@ const path = require('path');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use({
+    origin: [
+      'http://localhost:5173',  // Local frontend
+      'https://medixfrontend.onrender.com', // Add your deployed frontend URL
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  });
 app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
