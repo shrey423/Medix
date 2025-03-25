@@ -10,9 +10,7 @@ from collections import Counter
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",
-    "http://localhost",
-    "http://localhost:8000",
+"*"
 
 ]
 
