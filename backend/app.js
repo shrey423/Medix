@@ -12,14 +12,13 @@ const path = require('path');
 const app = express();
 
 // Middleware
-app.use({
-    origin: [
-'*', // Add your deployed frontend URL
-    ],
+app.use(cors({
+    origin: '*', // Change this to your frontend URL if needed
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-  });
+}));
+
 app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
