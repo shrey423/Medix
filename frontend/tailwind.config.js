@@ -1,31 +1,24 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: ["class"],
   content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    'node_modules/flowbite-react/lib/esm/**/*.js',
+    './src/**/*.{ts,tsx}',
+    "./node_modules/flowbite-react/lib/**/*.js",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
       screens: {
-        sm: '100%',
-        md: '100%',
-        lg: '1024px',
-        xl: '1280px',
-        "2xl": "1400px", // Adjusted from 1740px to 1400px as per ShadCN UI config
+        "2xl": "1400px",
       },
     },
     extend: {
       colors: {
-        green: '#487961',
-        headingColor: '#302C2C',
-        subHeadingColor: 'rgba(48, 44, 44, 0.65)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -60,22 +53,6 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-      },
-      fontSize: {
-        'h1': ['72px', { lineHeight: '118%', letterSpacing: '-2.16px' }],
-        'h2': ['40px', { lineHeight: '118%', letterSpacing: '-1.2px' }],
-        'h3': ['20px', { lineHeight: '30px', letterSpacing: '-0.2px' }],
-        'p': ['20px', { lineHeight: '30px', letterSpacing: '-0.2px' }],
-      },
-      screens: {
-        'custom': '1440px',
-        'custom-xl': '2440px',
-      },
-      maxWidth: {
-        'screen-2xl': '1740px', // Retained this from your original config
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -90,26 +67,12 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        ripple: {
-          "0%, 100%": {
-            transform: "translate(-50%, -50%) scale(1)",
-          },
-          "50%": {
-            transform: "translate(-50%, -50%) scale(0.9)",
-          },
-        },
       },
       animation: {
-        ripple: "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-
     },
   },
-  plugins: [
-    require('flowbite/plugin'),
-    require("tailwindcss-animate"),
-  ],
-  important: true, // Add this to make sure your custom styles are not overridden by Tailwind
+  plugins: [require("tailwindcss-animate"), require('flowbite/plugin')],
 }

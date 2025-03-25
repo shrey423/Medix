@@ -2,7 +2,7 @@ services:
   - type: web
     name: medix-frontend
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: npx update-browserslist-db@latest && npm install && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
     envVars:
