@@ -1,5 +1,5 @@
-const BACKEND_URL = "https://medix-g0nk.onrender.com";
-const ML_URL = "https://medixpython.onrender.com";//AWS
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const ML_URL = import.meta.env.VITE_ML_URL; // AWS
 // const BACKEND_URL = "https://swasthya-sampark.onrender.com";
 // const BACKEND_URL = "https://connectihealth-backend.vercel.app"; // production1 state-less
 // const BACKEND_URL = "https://connect-health.onrender.com"; // production2 state-full
