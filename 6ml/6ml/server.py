@@ -5,14 +5,12 @@ import pandas as pd
 import numpy as np
 import pickle
 from collections import Counter
+import os
 
 # Initialize the FastAPI app
 app = FastAPI()
 
-origins = [
-"*"
-
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -71,7 +69,13 @@ def predict(request: SymptomsRequest):
     result = predict_disease(request.symptoms)
     return result.to_dict(orient='records')
 
+# Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
 # Run the application
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
