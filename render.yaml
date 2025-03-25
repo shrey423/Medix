@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: medix-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache 
