@@ -6,6 +6,11 @@ import numpy as np
 import pickle
 from collections import Counter
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -20,25 +25,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load the label encoder and feature names
-with open('label_encoder.pkl', 'rb') as f:
-    le = pickle.load(f)
-with open('feature_names.pkl', 'rb') as f:
-    feature_names = pickle.load(f)
-
-# Load datasets for merging results
-doc_data = pd.read_csv("Doctor_Versus_Disease.csv", encoding='latin1', names=['Disease', 'Specialist'])
-des_data = pd.read_csv("Disease_Description.csv")
-
-# Update specialist for Tuberculosis
-doc_data['Specialist'] = np.where((doc_data['Disease'] == 'Tuberculosis'), 'Pulmonologist', doc_data['Specialist'])
-
-# Load models
+# Global variables to store loaded data
 models = {}
-model_names = ['Logistic Regression', 'Decision Tree', 'Random Forest', 'SVM', 'NaiveBayes', 'K-Nearest Neighbors']
-for model_name in model_names:
-    with open(f'{model_name}.pkl', 'rb') as f:
-        models[model_name] = pickle.load(f)
+le = None
+feature_names = None
+doc_data = None
+des_data = None
+
+def load_models():
+    """Load all required models and data"""
+    global models, le, feature_names, doc_data, des_data
+    
+    try:
+        logger.info("Loading label encoder and feature names...")
+        with open('label_encoder.pkl', 'rb') as f:
+            le = pickle.load(f)
+        with open('feature_names.pkl', 'rb') as f:
+            feature_names = pickle.load(f)
+
+        logger.info("Loading datasets...")
+        doc_data = pd.read_csv("Doctor_Versus_Disease.csv", encoding='latin1', names=['Disease', 'Specialist'])
+        des_data = pd.read_csv("Disease_Description.csv")
+        
+        # Update specialist for Tuberculosis
+        doc_data['Specialist'] = np.where((doc_data['Disease'] == 'Tuberculosis'), 'Pulmonologist', doc_data['Specialist'])
+
+        logger.info("Loading ML models...")
+        model_names = ['Logistic Regression', 'Decision Tree', 'Random Forest', 'SVM', 'NaiveBayes', 'K-Nearest Neighbors']
+        for model_name in model_names:
+            logger.info(f"Loading {model_name}...")
+            with open(f'{model_name}.pkl', 'rb') as f:
+                models[model_name] = pickle.load(f)
+        
+        logger.info("All models and data loaded successfully!")
+        return True
+    except Exception as e:
+        logger.error(f"Error loading models: {str(e)}")
+        return False
+
+# Load models on startup
+if not load_models():
+    raise RuntimeError("Failed to load required models and data")
 
 # Define the request model
 class SymptomsRequest(BaseModel):
@@ -72,7 +99,7 @@ def predict(request: SymptomsRequest):
 # Health check endpoint
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy", "models_loaded": len(models) > 0}
 
 # Run the application
 if __name__ == "__main__":
