@@ -1,5 +1,5 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const ML_URL = import.meta.env.VITE_ML_URL; // AWS
+const BACKEND_URL = "http://localhost:3001";
+const ML_URL = "http://127.0.0.1:8000";//AWS
 // const BACKEND_URL = "https://swasthya-sampark.onrender.com";
 // const BACKEND_URL = "https://connectihealth-backend.vercel.app"; // production1 state-less
 // const BACKEND_URL = "https://connect-health.onrender.com"; // production2 state-full
