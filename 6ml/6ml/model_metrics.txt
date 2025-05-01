@@ -1,0 +1,51 @@
+Model Performance Metrics:
+==================================================
+
+Logistic Regression:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
+Decision Tree:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
+Random Forest:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
+SVM:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
+NaiveBayes:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
+K-Nearest Neighbors:
+Accuracy: 1.0000
+Precision: 1.0000
+Recall: 1.0000
+F1-Score: 1.0000
+CV_Mean: 1.0000
+CV_Std: 0.0000
+
