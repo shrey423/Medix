@@ -15,9 +15,8 @@ function Room() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMicOn, setIsMicOn] = useState(true);
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-    const [patientName, setPatientName] = useState('');
-    const [roomId, setRoomId] = useState('');
+    const [patientName, setPatientName] = useState<string>('');
+    const [roomId, setRoomId] = useState<string>('');
 
     // Handle cleanup when component unmounts or user navigates away
     useEffect(() => {
@@ -31,9 +30,6 @@ function Room() {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
             }
-            if (remoteStream) {
-                remoteStream.getTracks().forEach(track => track.stop());
-            }
         };
 
         // Add warning when user tries to leave
@@ -44,16 +40,13 @@ function Room() {
             window.removeEventListener('beforeunload', handleBeforeUnload);
             cleanup();
         };
-    }, [localStream, remoteStream]);
+    }, [localStream]);
 
     // Handle back button
     useEffect(() => {
         const handleBackButton = () => {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
-            }
-            if (remoteStream) {
-                remoteStream.getTracks().forEach(track => track.stop());
             }
             navigate(-1);
         };
@@ -108,9 +101,6 @@ function Room() {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
             }
-            if (remoteStream) {
-                remoteStream.getTracks().forEach(track => track.stop());
-            }
 
             // Save consultation summary
             const token = localStorage.getItem('token');
@@ -137,9 +127,13 @@ function Room() {
                 return;
             }
 
+            // Set room ID
+            setRoomId(id);
+
             // Request media device permissions
             try {
-                await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                setLocalStream(stream);
             } catch (err) {
                 console.error('Error accessing media devices.', err);
                 alert('Please allow access to your camera and microphone.');
@@ -170,6 +164,13 @@ function Room() {
                 },
                 showScreenSharingButton: false,
                 onLeaveRoom: () => navigate('/'),
+                onUserJoin: (users) => {
+                    if (users && users.length > 0) {
+                        const user = users[0];
+                        setPatientName(user.userID);
+                        // Note: ZegoUIKit doesn't expose stream directly, we'll handle this differently
+                    }
+                },
             });
         };
 
