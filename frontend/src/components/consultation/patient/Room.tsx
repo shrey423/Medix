@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import Navbar from '../Navbar/NavBar.tsx';
@@ -35,8 +35,6 @@ const Room = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const containerRef = useRef<HTMLDivElement>(null);
-    const [roomId, setRoomId] = useState('');
-    const [doctorName, setDoctorName] = useState('');
 
     const endCall = () => {
         navigate('/consultation/patient');
@@ -48,9 +46,6 @@ const Room = () => {
                 console.error('Room ID is not provided');
                 return;
             }
-
-            // Set room ID
-            setRoomId(id);
 
             try {
                 const appID = parseInt(import.meta.env.VITE_ZEG_APP_ID);
@@ -83,8 +78,7 @@ const Room = () => {
                     },
                     onUserJoin: (users) => {
                         if (users && users.length > 0) {
-                            const user = users[0];
-                            setDoctorName(user.userID);
+                            console.log('Doctor joined:', users[0].userID);
                         }
                     },
                 });
