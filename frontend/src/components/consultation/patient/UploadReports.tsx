@@ -71,6 +71,22 @@ function ReportSummary() {
                 );
                 const summaryData = await marked(serverRes.data.summaryData as string);
                 setResp(summaryData);
+
+                // Save the report summary
+                const token = localStorage.getItem('token');
+                if (token) {
+                    try {
+                        await axios.post(`${BACKEND_URL}/api/consultation/save-report`, {
+                            token,
+                            summary: serverRes.data.summaryData
+                        });
+                        console.log('Report summary saved successfully');
+                    } catch (saveError) {
+                        console.error('Error saving report summary:', saveError);
+                    }
+                } else {
+                    console.error('No token found for saving report');
+                }
             } else {
                 throw new Error('No file selected');
             }

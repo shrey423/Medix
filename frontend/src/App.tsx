@@ -19,6 +19,7 @@ import deferRoleCheckingAndDoctors from "./components/consultation/deferRoleChec
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Analytics } from "@vercel/analytics/react";
 import ServicesPage from "./pages/ServicesPage.tsx";
+import ApprovedConsultations from "./components/consultation/patient/ApprovedConsultations";
 
 // Define loader functions for routes that need them
 // const chatBotLoader = async () => {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
     { path: "/consultation/logout", element: <Logout /> },
     { path: "/consultation/doctor/schedule", element: <Schedule /> },
     { path: "/consultation/doctor/schedule/:id", element: <Room /> },
+    { path: "/consultation/patient/schedule/:id", element: <Room /> },
     {
         path: "/consultation/doctor_data_visualization",
         element: <PatientDataVisual />,
@@ -50,6 +52,11 @@ const router = createBrowserRouter([
         path: "/consultation/patient_request_consultation",
         element: <RequestConsultation />,
         loader: deferRoleCheckingAndDoctors,
+    },
+    {
+        path: "/consultation/patient/approved",
+        element: <ApprovedConsultations />,
+        loader: deferRoleChecking,
     },
     {
         path: "/consultation/upload_reports",

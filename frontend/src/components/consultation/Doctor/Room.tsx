@@ -1,14 +1,134 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import Navbar from '../Navbar/NavBar.tsx';
 import Copyright from '../Copyright/Copyright';
 import './doctor.css';
+import { BACKEND_URL } from '../services/api.ts';
+import axios from 'axios';
 
 function Room() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const containerRef = useRef<HTMLDivElement>(null);
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isCameraOn, setIsCameraOn] = useState(true);
+    const [isMicOn, setIsMicOn] = useState(true);
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    const [patientName, setPatientName] = useState('');
+    const [roomId, setRoomId] = useState('');
+
+    // Handle cleanup when component unmounts or user navigates away
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        };
+
+        const cleanup = () => {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+            }
+        };
+
+        // Add warning when user tries to leave
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        // Cleanup function
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            cleanup();
+        };
+    }, [localStream, remoteStream]);
+
+    // Handle back button
+    useEffect(() => {
+        const handleBackButton = () => {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+            }
+            navigate(-1);
+        };
+
+        window.addEventListener('popstate', handleBackButton);
+        return () => window.removeEventListener('popstate', handleBackButton);
+    }, [localStream, navigate]);
+
+    useEffect(() => {
+        const setupCamera = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                setLocalStream(stream);
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                }
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                alert('Could not access camera and microphone');
+            }
+        };
+
+        setupCamera();
+    }, []);
+
+    const toggleCamera = () => {
+        if (localStream) {
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                setIsCameraOn(videoTrack.enabled);
+            }
+        }
+    };
+
+    const toggleMic = () => {
+        if (localStream) {
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                setIsMicOn(audioTrack.enabled);
+            }
+        }
+    };
+
+    const endCall = async () => {
+        try {
+            // Stop all media tracks
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Save consultation summary
+            const token = localStorage.getItem('token');
+            if (token) {
+                const summary = `Consultation with ${patientName} on ${new Date().toLocaleString()}`;
+                await axios.post(`${BACKEND_URL}/api/consultation/save-summary`, {
+                    token,
+                    roomId,
+                    summary
+                });
+            }
+
+            // Navigate back
+            navigate('/consultation/doctor/schedule');
+        } catch (error) {
+            console.error('Error ending call:', error);
+        }
+    };
 
     useEffect(() => {
         const initializeRoom = async () => {
@@ -26,8 +146,8 @@ function Room() {
                 return;
             }
 
-            const appID = 1653169076;
-            const serverSecret = 'ba466bb173ccdb251b277891fafcc1d2';
+            const appID = import.meta.env.VITE_ZEG_APP_ID;
+            const serverSecret = import.meta.env.VITE_ZEG_SERVER_SECRET;
             const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
                 appID,
                 serverSecret,
@@ -57,11 +177,45 @@ function Room() {
     }, [id, navigate]);
 
     return (
-        <div className="doctor-wrapper">
-            <Navbar isPatient={true} isDoctor={true} isLogout={true} />
-            <div className="consultation-room">
-                <h1 className="consultation-room__title">Consultation Room</h1>
-                <div ref={containerRef} style={{ width: '100%', height: '600px' }} />
+        <div className="min-h-screen flex flex-col bg-gray-100">
+            <Navbar isDoctor={true} isLogout={true} isPatient={false} />
+            <div className="flex-grow container mx-auto px-4 py-8">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                    <h1 className="text-2xl font-bold mb-4">Consultation Room: {id}</h1>
+                    <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
+                        <video
+                            ref={videoRef}
+                            autoPlay
+                            playsInline
+                            muted
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                    <div className="flex justify-center space-x-4">
+                        <button
+                            onClick={toggleCamera}
+                            className={`p-3 rounded-full ${
+                                isCameraOn ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
+                            } text-white transition-colors`}
+                        >
+                            {isCameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
+                        </button>
+                        <button
+                            onClick={toggleMic}
+                            className={`p-3 rounded-full ${
+                                isMicOn ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
+                            } text-white transition-colors`}
+                        >
+                            {isMicOn ? 'Mute' : 'Unmute'}
+                        </button>
+                        <button
+                            onClick={endCall}
+                            className="p-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors"
+                        >
+                            End Call
+                        </button>
+                    </div>
+                </div>
             </div>
             <Copyright />
         </div>

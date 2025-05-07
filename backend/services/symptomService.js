@@ -20,6 +20,7 @@ exports.addInitialSymptom = async (clientId, symptom) => {
 
 exports.expandSymptom = async (clientId, symptom) => {
     const expandedSymptoms = await geminiAPI.expandSymptom(symptom);
+    console.log('Expanded Symptoms:', expandedSymptoms);
     if (!expandedSymptoms) {
         throw new Error('Failed to expand symptom');
     }

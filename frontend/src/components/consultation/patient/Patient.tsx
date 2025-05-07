@@ -70,6 +70,13 @@ function Patient() {
                             Schedule a consultation with a doctor
                         </p>
                     </Link>
+                    <Link to="/consultation/patient/approved" className="patient-card">
+                        <div className="patient-card-icon">🎥</div>
+                        <h2 className="patient-card-title">My Consultations</h2>
+                        <p className="patient-card-description">
+                            View and join your approved consultations
+                        </p>
+                    </Link>
                     <Link to="/consultation/upload_reports" className="patient-card">
                         <div className="patient-card-icon">📁</div>
                         <h2 className="patient-card-title">Report Summary Generation</h2>
