@@ -16,7 +16,16 @@ const express = require("express");
 const port = process.env.PORT;
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: process.env.NODE_ENV === 'production' 
+            ? ['https://medix-g0nk.onrender.com', 'https://app.connect-health.xyz']
+            : '*',
+        methods: ['GET', 'POST'],
+        credentials: true
+    },
+    transports: ['websocket', 'polling']
+});
 
 const MAX_ITERATIONS = 7;
 

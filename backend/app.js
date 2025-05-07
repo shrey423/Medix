@@ -13,7 +13,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: '*', // Change this to your frontend URL if needed
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://medix-g0nk.onrender.com', 'https://app.connect-health.xyz']
+        : '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -22,7 +24,7 @@ app.use(cors({
 app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
-        "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' ws: wss:;"
+        "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' ws: wss: https:;"
     );
     next();
 });
