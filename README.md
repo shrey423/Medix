@@ -55,7 +55,7 @@ ML Backend          Main Backend
 - Google OAuth integration
 
 ### ML Backend (`/6ml`)
-- Python Flask API
+- Python Fast API
 - scikit-learn ML models:
   - Logistic Regression
   - Decision Trees
